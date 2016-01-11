@@ -164,6 +164,8 @@ to the [Contributor Covenant](http://contributor-covenant.org/) code of conduct.
 
 ## License
 
+[![Product Hunt](http://i.imgur.com/dtAr7wC.png)](https://www.producthunt.com)
+
 ```
  _________________
 < The MIT License >
