@@ -2,7 +2,7 @@
   "name": "deo",
   "version": "0.0.1",
   "description": "12factor config manager",
-  "homepage": "https://github.com/vesln/deo",
+  "homepage": "https://github.com/producthunt/deo",
   "author": {
     "name": "Veselin Todorov",
     "email": "hi@vesln.com",
@@ -10,10 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/vesln/deo.git"
+    "url": "git://github.com/producthunt/deo.git"
   },
   "bugs": {
-    "url": "https://github.com/vesln/deo/issues"
+    "url": "https://github.com/producthunt/deo/issues"
   },
   "main": "build/index.js",
   "scripts": {

@@ -1,6 +1,6 @@
 # deo
 
-[![npm version](https://img.shields.io/npm/v/deo.svg)](https://www.npmjs.com/package/deo) [![License](https://img.shields.io/npm/l/deo.svg)](https://www.npmjs.com/package/deo) [![Build Status](https://travis-ci.org/vesln/deo.svg)](https://travis-ci.org/vesln/deo)
+[![npm version](https://img.shields.io/npm/v/deo.svg)](https://www.npmjs.com/package/deo) [![License](https://img.shields.io/npm/l/deo.svg)](https://www.npmjs.com/package/deo) [![Build Status](https://travis-ci.org/producthunt/deo.svg)](https://travis-ci.org/producthunt/deo)
 
 Minimalistic, safe and easy to use 12factor config manager for Node.js
 
@@ -61,7 +61,7 @@ import deo from 'deo'
 
 export default deo({
   server: {
-    hostname: 'vesln.local',
+    hostname: 'producthunt.local',
     port: null // you must set a PORT env variable, otherwise deo will throw
   }
 })
