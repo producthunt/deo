@@ -1,6 +1,6 @@
 {
   "name": "deo",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "12factor config manager",
   "homepage": "https://github.com/vesln/deo",
   "author": {
