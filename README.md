@@ -52,37 +52,135 @@ referring to `process.env` all over the place:
 
 ## Usage
 
-Here is how you can use it in a simple express app:
-
-`config.js`:
-
-```js
-import deo from 'deo'
-
-export default deo({
-  server: {
-    hostname: 'producthunt.local',
-    port: null // you must set a PORT env variable, otherwise deo will throw
-  }
-})
-```
-
-`app.js`:
+Let's start with the following simple express app:
 
 ```js
 import express from 'express'
-import config from './config'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 
-app.listen(config('server.port'), config('server.hostname'))
+app.use(cookieParser(process.env.SECRET))
+
+app.get('/', (req, res) => {
+  res.send('Hello World')
+})
+
+app.listen(process.env.PORT, process.env.HOSTNAME)
 ```
 
-Run the app:
+The app requires you to specify:
 
-```shell
-$ PORT=4000 node index
+- cookie secret
+- port
+- hostname
+
+This is very obvious, since our app is quite simple and just in a single file.
+Let's say we decided to refactor it a little bit and extract the configurations
+into another file, since a couple of weeks later, the app config is all over the
+place:
+
+`config.js`:
+```js
+export default {
+  port: process.env.PORT,
+  hostname: process.env.HOSTNAME,
+  secret: process.env.SECRET,
+}
 ```
+
+And then our app becomes:
+
+```js
+import config from './config'
+
+// ...
+
+app.use(cookieParser(config.secret))
+
+// ...
+
+app.listen(config.port, config.hostname)
+```
+
+Very nice! However, what if we want to enforce the presence of let's say secret?
+Easy!
+
+```js
+const secret = process.env.SECRET;
+
+if (!secret) throw new Error('oops, secret is required!')
+
+export default {
+  port: process.env.PORT,
+  hostname: process.env.HOSTNAME,
+  secret,
+}
+```
+
+OK... so, we solve this issue, but now we have to remember to do it for every single
+required entry...
+
+A couple of week later happily using our config, it turns out that the
+`process.env.SECRET` on staging is not what we have configured. We start
+investigating and we find the following code:
+
+```js
+// NOTE: temporairly override for testing
+config.secret = 'test';
+```
+
+Oh, boy! How did we commit that without noticing? We are now eager to fix this
+issue by making our config immutable:
+
+```js
+const secret = process.env.SECRET;
+
+if (!secret) throw new Error('oops, secret is required!')
+
+const config = {
+  secret,
+  port: process.env.PORT,
+  hostname: process.env.HOSTNAME,
+}
+
+Object.freeze(config)
+
+export default config
+```
+
+Woohoo! We just resolved our issue... except, we totally forgot that
+`Object.freeze` is shallow, and if we add another object inside `config`
+it will not be frozen. Duh...
+
+Here is how we can replace our implementation with `deo`, that will take care of
+immutability, constancy and will force us to set all config entires:
+
+```js
+export default deo({
+  server: {
+    hostname: 'localhost', // default value, replace with the SERVER_HOSTNAME env var
+    port: 4000, // default value, replace with the SERVER_PORT env var
+  },
+  secret: null, // no default, it will force us to set it, otherwise will throw
+})
+```
+
+And our app:
+
+```js
+import config from './config'
+
+// ...
+
+app.use(cookieParser(config('secret')))
+
+// ...
+
+app.listen(config('server.port'), config('server.host'))
+```
+
+And that's it, we are good to go!
 
 **`deo` also works great with envc, dotenv and other `.env` file loaders**:
 
@@ -104,12 +202,6 @@ const config = deo({
 })
 
 console.log(config('port')) // => 4000
-```
-
-Start the app:
-
-```js
-$ SECRET=secure node index
 ```
 
 **You can also provide a custom env object different from process.env:**
