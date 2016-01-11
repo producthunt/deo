@@ -1,6 +1,6 @@
 {
   "name": "deo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "12factor config manager",
   "homepage": "https://github.com/producthunt/deo",
   "author": {
